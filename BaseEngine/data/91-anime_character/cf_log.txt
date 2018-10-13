@@ -1,0 +1,1 @@
+Warning: Mesh Cube without valid vertices (file: 'C:\Users\zoheb\Documents\BaseEngine_o - Copy\BaseEngine\BaseEngine\data\91-anime_character\Anime_character.fbx') [ (line 0)]

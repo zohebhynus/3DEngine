@@ -6,7 +6,8 @@ GraphicsClass::GraphicsClass()
 	m_D3D = 0;
 	m_Camera = 0;
 	m_Light = 0;
-	m_model = 0;
+	//m_model = 0;
+	m_modelImporter = 0;
 
 
 	m_LightShader = 0;
@@ -27,7 +28,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
 	x = 0.0f;
-	y = -5.0f;
+	y = 0.0f;
 	z = -10.0f;
 	xr = 0.0f;
 	yr = 0.0f;
@@ -56,18 +57,34 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	m_Camera->SetPosition(x, y, z);
 
-	m_model = new ModelClass;
-	if (!m_model)
+	m_modelImporter = new ImportModel;
+	if (!m_modelImporter)
 	{
 		return false;
 	}
 
-	result = m_model->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), (char*)"../BaseEngine/data/1911_d.png", (char*)"../BaseEngine/data/Freefall's Colt 1911.obj");
+	result = m_modelImporter->LoadModel((char*)"../BaseEngine/data/Dragon 2.5_fbx.fbx");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object", L"Error", MB_OK);
 		return false;
 	}
+	std::vector<ImportMesh*> model_1;
+	model_1 = m_modelImporter->GetMeshes();
+
+	for (int i = 0; i < model_1.size(); i++)
+	{
+		ModelClass* m = new ModelClass();
+		m->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), model_1, i);
+		m_model.push_back(m);
+	}
+
+	/*result = m_model->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), (char*)"../BaseEngine/data/rock.jpg", (char*)"../BaseEngine/data/Capoeira.fbx");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object", L"Error", MB_OK);
+		return false;
+	}*/
 	
 
 	m_LightShader = new LightShaderClass;
@@ -121,15 +138,21 @@ void GraphicsClass::Shutdown()
 	}
 	
 
-	if (m_model)
+	if (m_modelImporter)
 	{
-		delete m_model;
-		m_model = 0;
+		delete m_modelImporter;
+		m_modelImporter = 0;
 	}
 
+	if (m_model.size())
+	{
+		for (int i = 0; i < m_model.size(); i++)
+		{
+			delete m_model[i];
+			m_model[i] = 0;
+		}
 
-
-
+	}
 
 	if (m_Camera)
 	{
@@ -179,20 +202,23 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
-	worldMatrix = /*XMMatrixTranslation(0,-10,-30)**/ XMMatrixScaling(0.5, 0.5, 0.5) * XMMatrixRotationY(rotation);
+	worldMatrix = /*XMMatrixTranslation(0,-10,-30)**/ XMMatrixScaling(0.2, 0.2, 0.2) * XMMatrixRotationZ(-XM_PI/2) * XMMatrixRotationX(-XM_PI/2) * XMMatrixRotationY(rotation);
 
-	m_model->Render(m_D3D->GetDeviceContext());
-
-
-
-
-
-	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_model->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
-		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
-	if (!result)
+	for (int i=0; i < m_model.size(); i++)
 	{
-		return false;
+		m_model[i]->Render(m_D3D->GetDeviceContext());
+
+
+
+
+
+		result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_model[i]->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+			m_model[i]->GetTexture(), m_Light->GetDirection(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(),
+			m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+		if (!result)
+		{
+			return false;
+		}
 	}
 
 	// Present the rendered scene to the screen.

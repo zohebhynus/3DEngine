@@ -20,30 +20,36 @@ ModelClass::~ModelClass()
 
 }
 
-bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, char* textureFilename, char* modelFilename)
+bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<ImportMesh*> mesh, int num)
 {
 	bool result;
-	imp = new ImportModel();
+	//imp = new ImportModel();
 	//result = LoadModel(modelFilename);
 	//if (!result)
 	//{
 	//	return false;
 	//}
-	result = imp->LoadModel(modelFilename);
+	/*result = imp->LoadModel(modelFilename);
+	if (!result)
+	{
+		return false;
+	}*/
+
+
+	result = InitializeBuffer(device,  mesh, num);
 	if (!result)
 	{
 		return false;
 	}
 
-	mesh = imp->GetMeshes();
+	ImportModelMaterial* material_data;
+	material_data = mesh[num]->GetMaterial();
 
-	result = InitializeBuffer(device);
-	if (!result)
-	{
-		return false;
-	}
+	
 
-	result = LoadTexture(device,deviceContext,textureFilename);
+	
+
+	result = LoadTexture(device,deviceContext, (char*)"../BaseEngine/data/rock.jpg");
 	if (!result)
 	{
 		return false;
@@ -140,7 +146,7 @@ ID3D11ShaderResourceView* ModelClass::GetTexture()
 }
 
 
-bool ModelClass::InitializeBuffer(ID3D11Device* device)
+bool ModelClass::InitializeBuffer(ID3D11Device* device, std::vector<ImportMesh*> mesh, int num)
 {
 	VertexType* vertices;
 	unsigned long* indices;
@@ -160,10 +166,10 @@ bool ModelClass::InitializeBuffer(ID3D11Device* device)
 	std::vector<unsigned int> indi;
 
 
-	verts = mesh[3]->GetVertices();
-	norms = mesh[3]->GetNormals();
-	texx = mesh[3]->GetTexCoords();
-	indi = mesh[3]->GetIndices();
+	verts = mesh[num]->GetVertices();
+	norms = mesh[num]->GetNormals();
+	texx = mesh[num]->GetTexCoords();
+	indi = mesh[num]->GetIndices();
 
 	//for (i = 0; i < mesh.size(); i++)
 	//{

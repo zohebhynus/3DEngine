@@ -48,7 +48,8 @@ private:
 	
 	LightClass* m_Light;
 
-	ModelClass* m_model;
+	std::vector<ModelClass*> m_model;
+	ImportModel* m_modelImporter;
 
 
 	LightShaderClass* m_LightShader;

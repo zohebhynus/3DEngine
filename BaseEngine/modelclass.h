@@ -36,7 +36,7 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, char*, char*);
+	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, std::vector<ImportMesh*>, int);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 
@@ -48,7 +48,7 @@ public:
 	void GetPosition(float&, float&, float&);
 
 private:
-	bool InitializeBuffer(ID3D11Device*);
+	bool InitializeBuffer(ID3D11Device*, std::vector<ImportMesh*>, int);
 	void ShutdownBuffer();
 	void RenderBuffers(ID3D11DeviceContext*);
 

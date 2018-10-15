@@ -63,19 +63,21 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
-	result = m_modelImporter->LoadModel((char*)"../BaseEngine/data/Dragon 2.5_fbx.fbx");
+	result = m_modelImporter->LoadModel((char*)"../BaseEngine/data/Nanosuit/nanosuit.obj");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object", L"Error", MB_OK);
 		return false;
 	}
 	std::vector<ImportMesh*> model_1;
+	std::vector<ImportModelMaterial*> mat_1;
 	model_1 = m_modelImporter->GetMeshes();
+	mat_1 = m_modelImporter->GetMaterials();
 
 	for (int i = 0; i < model_1.size(); i++)
 	{
 		ModelClass* m = new ModelClass();
-		m->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), model_1, i);
+		m->Initialize(m_D3D->GetDevice(), m_D3D->GetDeviceContext(), model_1, mat_1 ,i);
 		m_model.push_back(m);
 	}
 
@@ -202,7 +204,7 @@ bool GraphicsClass::Render(float rotation)
 	m_D3D->GetWorldMatrix(worldMatrix);
 	m_D3D->GetProjectionMatrix(projectionMatrix);
 
-	worldMatrix = /*XMMatrixTranslation(0,-10,-30)**/ XMMatrixScaling(0.2, 0.2, 0.2) * XMMatrixRotationZ(-XM_PI/2) * XMMatrixRotationX(-XM_PI/2) * XMMatrixRotationY(rotation);
+	worldMatrix =  XMMatrixScaling(0.3, 0.3, 0.3)/* XMMatrixRotationZ(-XM_PI/2) * XMMatrixRotationX(-XM_PI/2) */* XMMatrixRotationY(rotation);
 
 	for (int i=0; i < m_model.size(); i++)
 	{

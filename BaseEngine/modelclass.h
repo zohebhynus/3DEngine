@@ -36,7 +36,7 @@ public:
 	ModelClass(const ModelClass&);
 	~ModelClass();
 
-	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, std::vector<ImportMesh*>, int);
+	bool Initialize(ID3D11Device*, ID3D11DeviceContext*, std::vector<ImportMesh*>, std::vector<ImportModelMaterial*>,int);
 	void Shutdown();
 	void Render(ID3D11DeviceContext*);
 

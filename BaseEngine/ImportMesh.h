@@ -6,6 +6,8 @@ using namespace DirectX;
 
 struct aiMesh;
 
+#define NUM_BONES_PER_VEREX 4
+
 
 class ImportModelMaterial;
 class ImportModel;
@@ -37,6 +39,38 @@ public:
 	ImportMesh(ImportModel& a_importModel, aiMesh& a_mesh);
 	
 private:
+
+	struct BoneInfo
+	{
+		XMMATRIX BoneOffset;
+		XMMATRIX FinalTransformation;
+
+		BoneInfo()
+		{
+			BoneOffset *= 0;
+			FinalTransformation *= 0;
+		}
+	};
+
+	struct VertexBoneData
+	{
+		unsigned int IDs[NUM_BONES_PER_VEREX];
+		float Weights[NUM_BONES_PER_VEREX];
+
+		VertexBoneData()
+		{
+			Reset();
+		};
+
+		void Reset()
+		{
+			memset(IDs, 0, sizeof(IDs));
+			memset(Weights, 0, sizeof(Weights));
+		}
+
+		void AddBoneData(unsigned int BoneID, float Weight);
+	};
+
 	std::string m_name;
 	std::vector<XMFLOAT3> m_vertices;
 	std::vector<XMFLOAT3> m_normals;
@@ -47,6 +81,7 @@ private:
 
 	unsigned int m_faceCount;
 	std::vector<unsigned int> m_indices;
+	
 	
 
 	ImportModel& m_importModel;

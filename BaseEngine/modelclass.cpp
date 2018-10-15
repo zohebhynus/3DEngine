@@ -20,7 +20,7 @@ ModelClass::~ModelClass()
 
 }
 
-bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<ImportMesh*> mesh, int num)
+bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, std::vector<ImportMesh*> mesh, std::vector<ImportModelMaterial*> mat,int num)
 {
 	bool result;
 	//imp = new ImportModel();
@@ -42,12 +42,13 @@ bool ModelClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceCon
 		return false;
 	}
 
-	ImportModelMaterial* material_data;
-	material_data = mesh[num]->GetMaterial();
 
-	
 
-	
+
+	char* path = (char *)"../BaseEngine/data/Nanosuit/";
+
+
+	mat[num];
 
 	result = LoadTexture(device,deviceContext, (char*)"../BaseEngine/data/rock.jpg");
 	if (!result)

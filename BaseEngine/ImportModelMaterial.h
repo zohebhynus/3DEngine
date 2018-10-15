@@ -35,6 +35,7 @@ public:
 	ImportModel& GetModel();
 	const std::string& GetName() const;
 	const std::map<ImportTextureType, std::vector<std::string>*>& GetTexture() const;
+	std::string m_name;
 
 	//(ImportModel& a_model);
 	ImportModelMaterial(ImportModel& a_model, aiMaterial* a_material);
@@ -51,6 +52,6 @@ private:
 
 	ImportModel& m_importModel;
 	std::map<ImportTextureType, std::vector<std::string>*> m_textures;
-	std::string m_name;
+	//std::string m_name;
 };
 
